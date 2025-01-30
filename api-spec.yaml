@@ -1,0 +1,76 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: Heroku-Salesforce API
+  description: Example Heroku app as an API using Salesforce SDK.
+servers:
+  - url: http://127.0.0.1:3000
+paths:
+  /parsefile:
+    get:
+      operationId: ParseFile
+      description: Return parsed file
+      parameters:
+        - in: query
+          name: contentVersionId
+          schema:
+            type: string
+            required: true
+          description: Version Data URL for the Document
+      responses:
+        '200':
+          description: Successfully parsed the file
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: string
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/DeveloperError'
+        '503':
+          $ref: '#/components/responses/UnknownError'
+components:
+  responses:
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    DeveloperError:
+      description: DeveloperError
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+    UnknownError:
+      description: UnknownError
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+
+  schemas:
+    # Schema for error response body
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        message:
+          type: string
+      required:
+        - code
+        - message
